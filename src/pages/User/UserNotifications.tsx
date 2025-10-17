@@ -11,7 +11,7 @@ export default function Notifications() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="min-h-screen bg-gradient-to-b from-gray-950 via-blue-950 to-black text-white pt-24 px-6 md:px-12 pb-20"
+      className="min-h-screen text-white pt-2 px-6 md:px-12 pb-10"
     >
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-blue-400">Notifications</h1>

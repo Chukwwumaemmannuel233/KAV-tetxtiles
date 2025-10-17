@@ -61,7 +61,7 @@ export default function UserCheckout() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="relative min-h-screen bg-gradient-to-b from-gray-950 via-blue-950 to-black text-white pt-20 md:pt-24 px-6 md:px-12 pb-32 overflow-y-auto"
+      className="relative min-h-screen text-white pt-20 md:pt-20 px-6 md:px-12 pb-32 overflow-y-auto"
     >
       {/* ✅ Success Toast */}
       <AnimatePresence>

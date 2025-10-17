@@ -62,7 +62,7 @@ export default function SettingsPage() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-gradient-to-b from-gray-950 via-blue-950 to-black text-white py-10 px-5 md:px-16"
+      className="min-h-screen text-white py-5 px-5 md:px-16"
     >
       <h1 className="text-3xl font-bold text-primary mb-8">Settings</h1>
 
