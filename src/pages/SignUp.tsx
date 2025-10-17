@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { FormEvent, ChangeEvent } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useNotifications } from "../context/NotificationContext"; // ✅ Import global toast
 
 export default function SignUp() {
   const [firstName, setFirstName] = useState<string>("");
@@ -13,22 +14,32 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
   const navigate = useNavigate();
+  const { addNotification } = useNotifications(); // ✅ Use global toast
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
-      alert("Please fill in all fields.");
+      addNotification(
+        "Missing Fields",
+        "Please fill in all fields before proceeding.",
+        "red"
+      );
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      addNotification("Password Error", "Passwords do not match!", "red");
       return;
     }
 
-    alert(`Account created successfully for ${firstName} ${lastName}!`);
-    // In SignIn or SignUp handleSubmit
+    // ✅ Success message
+    addNotification(
+      "Account Created 🎉",
+      `Welcome, ${firstName}! Your account has been created successfully.`,
+      "green"
+    );
+
     localStorage.setItem("user", JSON.stringify({ email }));
     navigate("/dashboard");
   };
@@ -51,10 +62,7 @@ export default function SignUp() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* First Name */}
           <div>
-            <label
-              htmlFor="firstName"
-              className="block text-sm text-gray-300 mb-1.5"
-            >
+            <label htmlFor="firstName" className="block text-sm text-gray-300 mb-1.5">
               First Name
             </label>
             <input
@@ -62,19 +70,14 @@ export default function SignUp() {
               id="firstName"
               placeholder="John"
               value={firstName}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setFirstName(e.target.value)
-              }
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value)}
               className="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 focus:border-blue-400 focus:ring-2 focus:ring-blue-500 outline-none text-white text-sm"
             />
           </div>
 
           {/* Last Name */}
           <div>
-            <label
-              htmlFor="lastName"
-              className="block text-sm text-gray-300 mb-1.5"
-            >
+            <label htmlFor="lastName" className="block text-sm text-gray-300 mb-1.5">
               Last Name
             </label>
             <input
@@ -82,19 +85,14 @@ export default function SignUp() {
               id="lastName"
               placeholder="Doe"
               value={lastName}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setLastName(e.target.value)
-              }
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setLastName(e.target.value)}
               className="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 focus:border-blue-400 focus:ring-2 focus:ring-blue-500 outline-none text-white text-sm"
             />
           </div>
 
           {/* Email */}
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm text-gray-300 mb-1.5"
-            >
+            <label htmlFor="email" className="block text-sm text-gray-300 mb-1.5">
               Email Address
             </label>
             <input
@@ -102,19 +100,14 @@ export default function SignUp() {
               id="email"
               placeholder="example@email.com"
               value={email}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setEmail(e.target.value)
-              }
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               className="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 focus:border-blue-400 focus:ring-2 focus:ring-blue-500 outline-none text-white text-sm"
             />
           </div>
 
           {/* Password */}
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm text-gray-300 mb-1.5"
-            >
+            <label htmlFor="password" className="block text-sm text-gray-300 mb-1.5">
               Password
             </label>
             <input
@@ -122,19 +115,14 @@ export default function SignUp() {
               id="password"
               placeholder="Enter your password"
               value={password}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setPassword(e.target.value)
-              }
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
               className="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 focus:border-blue-400 focus:ring-2 focus:ring-blue-500 outline-none text-white text-sm"
             />
           </div>
 
           {/* Confirm Password */}
           <div>
-            <label
-              htmlFor="confirmPassword"
-              className="block text-sm text-gray-300 mb-1.5"
-            >
+            <label htmlFor="confirmPassword" className="block text-sm text-gray-300 mb-1.5">
               Confirm Password
             </label>
             <input
@@ -142,9 +130,7 @@ export default function SignUp() {
               id="confirmPassword"
               placeholder="Re-enter your password"
               value={confirmPassword}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setConfirmPassword(e.target.value)
-              }
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
               className="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 focus:border-blue-400 focus:ring-2 focus:ring-blue-500 outline-none text-white text-sm"
             />
           </div>

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useNotifications } from "../../context/NotificationContext";
 
 interface Product {
   id: number;
@@ -20,10 +21,13 @@ export default function Shop() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showSignupModal, setShowSignupModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { addNotification } = useNotifications();
 
   // 🛍 Restore cart
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("guestCart") || "[]") as Product[];
+    const stored = JSON.parse(
+      localStorage.getItem("guestCart") || "[]"
+    ) as Product[];
     setCart(stored);
   }, []);
 
@@ -53,21 +57,36 @@ export default function Shop() {
   }, [loading, visibleProducts]);
 
   // 🧵 Add to cart
- // 🧵 Add to cart (fixed)
-const handleAddToCart = (product: Product) => {
-  // Get existing cart items from localStorage
-  const storedCart = JSON.parse(localStorage.getItem("guestCart") || "[]") as Product[];
+  // 🧵 Add to cart (fixed)
+  const handleAddToCart = (product: Product) => {
+    // Get existing cart items
+    const storedCart = JSON.parse(
+      localStorage.getItem("guestCart") || "[]"
+    ) as Product[];
 
-  // Add new product
-  const updated = [...storedCart, product];
+    // Prevent duplicates
+    const isAlreadyInCart = storedCart.some((item) => item.id === product.id);
+    if (isAlreadyInCart) {
+      addNotification(
+        "Already Added",
+        `${product.name} is already in your cart.`,
+        "blue"
+      );
+      return;
+    }
 
-  // Save updated cart to localStorage
-  localStorage.setItem("guestCart", JSON.stringify(updated));
+    // Add product
+    const updated = [...storedCart, product];
+    localStorage.setItem("guestCart", JSON.stringify(updated));
+    setCart(updated);
 
-  // Update state
-  setCart(updated);
-};
-
+    // ✅ Show success toast
+    addNotification(
+      "Added to Cart",
+      `${product.name} has been added to your cart.`,
+      "green"
+    );
+  };
 
   // 💳 Checkout logic (opens modal)
   const handleCheckout = () => {
@@ -80,71 +99,91 @@ const handleAddToCart = (product: Product) => {
       id: 1,
       name: "Royal Ankara",
       price: "₦8,500",
-      description: "Vibrant African Ankara fabric with unique color patterns for premium fashion wear.",
-      image: "https://media.istockphoto.com/id/2209511574/photo/shweshwe-an-iconic-printed-cotton-fabric-from-south-africa.jpg?s=612x612&w=0&k=20&c=kvIQ7SaME88kGwqctwUEX6q77IXXI_2OYlLiAetFZPc=",
+      description:
+        "Vibrant African Ankara fabric with unique color patterns for premium fashion wear.",
+      image:
+        "https://media.istockphoto.com/id/2209511574/photo/shweshwe-an-iconic-printed-cotton-fabric-from-south-africa.jpg?s=612x612&w=0&k=20&c=kvIQ7SaME88kGwqctwUEX6q77IXXI_2OYlLiAetFZPc=",
     },
     2: {
       id: 2,
       name: "Pure Cotton Fabric",
       price: "₦6,200",
-      description: "Soft and breathable cotton fabric perfect for casual and professional outfits.",
-      image: "https://plus.unsplash.com/premium_photo-1674747086849-3ec94d641ded?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHRleHRpbGV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600",
+      description:
+        "Soft and breathable cotton fabric perfect for casual and professional outfits.",
+      image:
+        "https://plus.unsplash.com/premium_photo-1674747086849-3ec94d641ded?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHRleHRpbGV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=600",
     },
     3: {
       id: 3,
       name: "Luxury Linen Material",
       price: "₦9,000",
-      description: "High-end linen known for its lightweight and durability, ideal for warm weather.",
-      image: "https://media.istockphoto.com/id/2164628087/photo/blue-sports-clothing-fabric-football-shirt-jersey-texture.jpg?s=612x612&w=0&k=20&c=tOFVOPH1vs-LGKIag6zW8qabF9Ogdp72rzSXZnbjyPQ=",
+      description:
+        "High-end linen known for its lightweight and durability, ideal for warm weather.",
+      image:
+        "https://media.istockphoto.com/id/2164628087/photo/blue-sports-clothing-fabric-football-shirt-jersey-texture.jpg?s=612x612&w=0&k=20&c=tOFVOPH1vs-LGKIag6zW8qabF9Ogdp72rzSXZnbjyPQ=",
     },
     4: {
       id: 4,
       name: "African Wax Print",
       price: "₦7,800",
-      description: "Classic wax prints with bold motifs that celebrate African heritage and style.",
-      image: "https://media.istockphoto.com/id/91697992/photo/mayan-blankets.jpg?s=612x612&w=0&k=20&c=7cprqjzrNQWWb3MCr23rC_HUuOWfLI8u7i6La02zQOw=",
+      description:
+        "Classic wax prints with bold motifs that celebrate African heritage and style.",
+      image:
+        "https://media.istockphoto.com/id/91697992/photo/mayan-blankets.jpg?s=612x612&w=0&k=20&c=7cprqjzrNQWWb3MCr23rC_HUuOWfLI8u7i6La02zQOw=",
     },
     5: {
       id: 5,
       name: "Velvet Material",
       price: "₦10,500",
-      description: "Luxurious and soft velvet fabric that adds class and richness to any design.",
-      image: "https://media.istockphoto.com/id/123202071/photo/crumpled-black-satin-texture-background.jpg?s=612x612&w=0&k=20&c=CPsy5lMIEwzBdOropYMBZh9E_l0BQS67tK6UMFciqGc=",
+      description:
+        "Luxurious and soft velvet fabric that adds class and richness to any design.",
+      image:
+        "https://media.istockphoto.com/id/123202071/photo/crumpled-black-satin-texture-background.jpg?s=612x612&w=0&k=20&c=CPsy5lMIEwzBdOropYMBZh9E_l0BQS67tK6UMFciqGc=",
     },
     6: {
       id: 6,
       name: "Chiffon Fabric",
       price: "₦5,500",
-      description: "Elegant and light chiffon material perfect for dresses and evening wear.",
-      image: "https://media.istockphoto.com/id/171147662/photo/smoky-gauze-fabric.jpg?s=612x612&w=0&k=20&c=lDi8dxfJgVr9pGIGyW67pqm8DFFRwmBJxtqH9-jP0NE=",
+      description:
+        "Elegant and light chiffon material perfect for dresses and evening wear.",
+      image:
+        "https://media.istockphoto.com/id/171147662/photo/smoky-gauze-fabric.jpg?s=612x612&w=0&k=20&c=lDi8dxfJgVr9pGIGyW67pqm8DFFRwmBJxtqH9-jP0NE=",
     },
     7: {
       id: 7,
       name: "Silk Crepe",
       price: "₦12,000",
-      description: "Smooth, glossy silk crepe ideal for classy gowns and traditional attires.",
-      image: "https://media.istockphoto.com/id/1410764223/photo/blue-crepe-satin-crumpled-or-wavy-fabric-texture-background-abstract-linen-cloth-soft-waves.jpg?s=612x612&w=0&k=20&c=Zjm1IwAYIaShzM2u6HjSr123V3RAmOGmnToNrp8ZaJs=",
+      description:
+        "Smooth, glossy silk crepe ideal for classy gowns and traditional attires.",
+      image:
+        "https://media.istockphoto.com/id/1410764223/photo/blue-crepe-satin-crumpled-or-wavy-fabric-texture-background-abstract-linen-cloth-soft-waves.jpg?s=612x612&w=0&k=20&c=Zjm1IwAYIaShzM2u6HjSr123V3RAmOGmnToNrp8ZaJs=",
     },
     8: {
       id: 8,
       name: "Brocade Pattern",
       price: "₦11,800",
-      description: "Brocade material with rich embossed designs — perfect for luxury fashion lines.",
-      image: "https://media.istockphoto.com/id/157580047/photo/red-silk-wallpaper-with-ornaments.jpg?s=612x612&w=0&k=20&c=VgREC9hTA2R9ILRVZdEQbBgff_FmrrD_tEwKIdVaNH8=",
+      description:
+        "Brocade material with rich embossed designs — perfect for luxury fashion lines.",
+      image:
+        "https://media.istockphoto.com/id/157580047/photo/red-silk-wallpaper-with-ornaments.jpg?s=612x612&w=0&k=20&c=VgREC9hTA2R9ILRVZdEQbBgff_FmrrD_tEwKIdVaNH8=",
     },
     9: {
       id: 9,
       name: "Adire Indigo",
       price: "₦7,000",
-      description: "Traditional Nigerian Adire dye patterns on soft cotton material.",
-      image: "https://images.pexels.com/photos/4491421/pexels-photo-4491421.jpeg",
+      description:
+        "Traditional Nigerian Adire dye patterns on soft cotton material.",
+      image:
+        "https://images.pexels.com/photos/4491421/pexels-photo-4491421.jpeg",
     },
     10: {
       id: 10,
       name: "Polished Cotton",
       price: "₦8,000",
-      description: "Polished cotton with smooth texture and vibrant colors suitable for any style.",
-      image: "https://images.pexels.com/photos/1670761/pexels-photo-1670761.jpeg",
+      description:
+        "Polished cotton with smooth texture and vibrant colors suitable for any style.",
+      image:
+        "https://images.pexels.com/photos/1670761/pexels-photo-1670761.jpeg",
     },
   };
 
@@ -160,7 +199,8 @@ const handleAddToCart = (product: Product) => {
           Shop Our Premium Fabrics
         </motion.h1>
         <p className="text-gray-300 mt-4 text-lg">
-          Discover luxury, sustainability, and beauty — all woven into every fabric.
+          Discover luxury, sustainability, and beauty — all woven into every
+          fabric.
         </p>
       </div>
 
@@ -184,8 +224,12 @@ const handleAddToCart = (product: Product) => {
                   alt={product.name}
                   className="rounded-lg h-56 w-full object-cover mb-4"
                 />
-                <h3 className="text-xl font-semibold text-blue-300">{product.name}</h3>
-                <p className="text-gray-400 text-sm mt-1 flex-1">{product.description}</p>
+                <h3 className="text-xl font-semibold text-blue-300">
+                  {product.name}
+                </h3>
+                <p className="text-gray-400 text-sm mt-1 flex-1">
+                  {product.description}
+                </p>
                 <p className="text-gray-200 text-lg mt-3">{product.price}</p>
                 <div className="flex justify-between mt-4">
                   <button
@@ -245,7 +289,9 @@ const handleAddToCart = (product: Product) => {
                 Ready to Complete Your Purchase?
               </h2>
               <p className="text-gray-300 mb-6">
-                You’re almost there! Sign up or log in to enjoy seamless checkout, track your orders, and access exclusive fabric collections.
+                You’re almost there! Sign up or log in to enjoy seamless
+                checkout, track your orders, and access exclusive fabric
+                collections.
               </p>
               <div className="flex justify-center gap-4">
                 <button
@@ -293,9 +339,15 @@ const handleAddToCart = (product: Product) => {
                 alt={selectedProduct.name}
                 className="rounded-lg h-60 w-full object-cover mb-4"
               />
-              <h2 className="text-2xl font-bold text-blue-400 mb-2">{selectedProduct.name}</h2>
-              <p className="text-gray-300 mb-4">{selectedProduct.description}</p>
-              <p className="text-gray-200 text-lg font-semibold mb-4">{selectedProduct.price}</p>
+              <h2 className="text-2xl font-bold text-blue-400 mb-2">
+                {selectedProduct.name}
+              </h2>
+              <p className="text-gray-300 mb-4">
+                {selectedProduct.description}
+              </p>
+              <p className="text-gray-200 text-lg font-semibold mb-4">
+                {selectedProduct.price}
+              </p>
               <button
                 onClick={() => handleAddToCart(selectedProduct)}
                 className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold"

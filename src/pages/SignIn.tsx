@@ -4,22 +4,34 @@ import { useState } from "react";
 import type { FormEvent, ChangeEvent } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useNotifications } from "../context/NotificationContext"; // ✅ import global toast
 
 export default function SignIn() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
+  const { addNotification } = useNotifications(); // ✅ use your toast system
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!email || !password) {
-      alert("Please fill in all fields.");
+      addNotification(
+        "Missing Fields",
+        "Please fill in all fields.",
+        "gray" // toast color
+      );
       return;
     }
 
-    alert(`Signed in successfully as ${email}!`);
     localStorage.setItem("user", JSON.stringify({ email }));
+
+    addNotification(
+      "Login Successful 🎉",
+      `Welcome back, ${email}!`,
+      "green"
+    );
+
     navigate("/dashboard");
   };
 
@@ -47,10 +59,7 @@ export default function SignIn() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* Email */}
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm text-gray-300 mb-1.5"
-            >
+            <label htmlFor="email" className="block text-sm text-gray-300 mb-1.5">
               Email Address
             </label>
             <input
@@ -65,10 +74,7 @@ export default function SignIn() {
 
           {/* Password */}
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm text-gray-300 mb-1.5"
-            >
+            <label htmlFor="password" className="block text-sm text-gray-300 mb-1.5">
               Password
             </label>
             <input
