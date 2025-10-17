@@ -19,7 +19,6 @@ export default function SignIn() {
     }
 
     alert(`Signed in successfully as ${email}!`);
-    // In SignIn or SignUp handleSubmit
     localStorage.setItem("user", JSON.stringify({ email }));
     navigate("/dashboard");
   };
@@ -31,12 +30,12 @@ export default function SignIn() {
     setPassword(e.target.value);
 
   return (
-    <section className="flex justify-center bg-gradient-to-b from-gray-950 via-blue-950 to-black text-white px-6 py-6 md:py-12 min-h-screen overflow-y-auto">
+    <section className="flex justify-center items-center bg-gradient-to-b from-gray-950 via-blue-950 to-black text-white px-6 py-6 md:py-12 min-h-screen">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="w-full max-w-md bg-gray-900/80 backdrop-blur-md rounded-2xl shadow-xl p-6 sm:p-8 mt-16 md:mt-24"
+        className="w-full max-w-md bg-gray-900/80 backdrop-blur-md rounded-2xl shadow-xl p-6 sm:p-8"
       >
         <h1 className="text-2xl md:text-3xl font-semibold text-blue-400 mb-4 text-center">
           Sign In
